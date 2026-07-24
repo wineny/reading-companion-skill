@@ -1,24 +1,27 @@
 # 📖 Reading Companion — a Claude Code / Agent Skill
 
-책 한 권을 **여러 세션에 걸쳐 함께 읽어주는** 독서 동반 워크플로우 스킬입니다.
-PDF/원서를 직접 읽는 동안 Claude가 세 역할을 맡습니다.
+*[한국어 README](./README.ko.md)*
 
-1. **기록자** — 인상 깊은 문구를 아카이브에 그대로 쌓습니다.
-2. **선생** — 헷갈리는 부분을 물으면 설명하고, 그 학습 포인트를 메모로 남깁니다.
-3. **복습 코치** — 그날 읽은 분량으로 퀴즈를 내고, 채점하며 **간격 반복 복습 카드**를 만듭니다.
+A skill that **reads a book with you across multiple sessions.** While you read a PDF or physical book yourself, Claude takes on three roles:
 
-> 핵심 차별점: 시중 하이라이트 앱은 *내가 고른 문구*만 복습시키지만, 이 스킬은 ***내가 못 알아들어 물어본 것*을 복습 대상으로 남깁니다.** "혼란 → 설명 → 나중에 복습" 루프를 닫아 줍니다.
+1. **Archivist** — saves the quotes you love, verbatim, into an archive.
+2. **Tutor** — when you ask about a confusing passage, it explains *and* logs that learning point.
+3. **Review coach** — quizzes you on what you read that day and builds **spaced-repetition review cards**.
 
-## 무엇을 만드나요
+> What sets it apart: highlight apps review *the quotes you picked*. This skill reviews ***the things you didn't understand and asked about.*** It closes the "confusion → explanation → future review" loop.
 
-읽는 책 폴더 안에 두 가지를 만들고 계속 갱신합니다.
+## What it produces
 
-- **`독서아카이브.md`** — ① 날짜별 독서 로그(읽은 범위·인상 문구·나의 메모) ② 인상 문구 전체 모음 ③ 목차 진도 체크
-- **`복습/YYYY-MM-DD_복습.md`** — 하루치 간격 반복 복습 카드(채점표 · 약한 고리 · 문제+정답 · 복습 기록표: 내일 → 3일 뒤 → 1주 뒤)
+Inside the folder of the book you're reading, it creates and keeps updating two things:
 
-## 설치
+- **`독서아카이브.md` (reading archive)** — ① a dated reading log (range read · favorite quotes · your notes), ② a running collection of all quotes, ③ a table-of-contents progress checklist.
+- **`복습/YYYY-MM-DD_복습.md` (review cards)** — one spaced-repetition card per day (score summary · weak spots · questions+answers · review schedule: tomorrow → 3 days → 1 week).
 
-Claude Code의 개인 스킬 폴더로 복사하면 됩니다.
+> Note: the templates are written in Korean. Swap the wording in `assets/` for any language you like — the workflow is language-agnostic.
+
+## Install
+
+Copy it into your Claude Code personal skills folder.
 
 ```bash
 git clone https://github.com/wineny/reading-companion-skill.git
@@ -26,32 +29,32 @@ mkdir -p ~/.claude/skills/reading-companion
 cp -R reading-companion-skill/SKILL.md reading-companion-skill/assets ~/.claude/skills/reading-companion/
 ```
 
-`~/.claude/skills/reading-companion/` 아래에 `SKILL.md`와 `assets/`가 놓이면 준비 끝입니다.
+Once `SKILL.md` and `assets/` sit under `~/.claude/skills/reading-companion/`, you're ready.
 
-## 사용법
+## How to use
 
-읽고 있는 책 폴더에서 대화를 시작하고 자연스럽게 말하면 됩니다.
+Start a conversation from the folder of the book you're reading, and just talk naturally:
 
-- **시작** — "이 책 같이 읽자" / "독서 시작" → 아카이브가 없으면 목차를 뽑아 새로 만들고, 있으면 지난 진도부터 이어갑니다.
-- **문구 기록** — "이 문구 기록해줘" 하고 문장을 주면 아카이브에 그대로 쌓입니다.
-- **질문** — "이 부분 무슨 뜻이야?" 하고 물으면 설명하고, 그 포인트를 `나의 메모`에 남깁니다.
-- **복습** — "오늘 읽은 거 퀴즈 내줘" / "복습하자" → 그날 분량으로 5~8문항을 하나씩 내고 채점한 뒤 복습 카드를 만듭니다.
-- **재복습** — 다른 날 "복습 카드 풀래" → 예전 카드를 답 가린 채 다시 풀고 기록합니다.
+- **Start** — "let's read this book together" / "start reading" → if no archive exists, it extracts the table of contents and creates one; if it does, it picks up from where you left off.
+- **Save a quote** — hand it a sentence and it stores it verbatim in the archive.
+- **Ask** — "what does this part mean?" → it explains and logs the point into your notes.
+- **Review** — "quiz me on today's reading" / "let's review" → 5–8 questions, one at a time, graded, then a review card.
+- **Re-review** — another day, "let's do the review cards" → it re-runs an old card with answers hidden and records your progress.
 
-## 구조
+## Structure
 
 ```
 reading-companion/
-├── SKILL.md                 # 워크플로우 정의 (frontmatter + 절차)
+├── SKILL.md                 # workflow definition (frontmatter + procedure)
 └── assets/
-    ├── 독서아카이브.md        # 로그·문구모음·목차 템플릿
-    └── 복습카드.md            # 채점표·약한고리·간격반복 템플릿
+    ├── 독서아카이브.md         # log / quote-collection / TOC template
+    └── 복습카드.md             # score / weak-spot / spaced-repetition template
 ```
 
-## 만든 배경
+## Why it exists
 
-『더 맘 테스트』를 읽을 때 손으로 하던 독서 루틴(문구 기록 → 질문 → 퀴즈·간격 반복 복습)을 그대로 스킬로 옮긴 것입니다. 공개 생태계(Claude 스킬 마켓·Readwise·RemNote·커스텀 GPT 등)를 폭넓게 찾아봤지만, "책을 세션마다 함께 읽으며 문구 기록 + 질문 로그 + 그날 분량 퀴즈 + 간격 반복"을 하나로 묶은 도구는 없었습니다.
+A good reading routine — collect quotes, ask questions, then quiz yourself with spaced repetition — is easy to do by hand but tedious to keep up across a whole book. This skill turns that routine into something Claude runs for you, session after session. I looked hard across the ecosystem (Claude skill marketplaces, Readwise, RemNote, custom GPTs, and more) and found no single tool that combines quote archiving + a log of what confused you + a daily quiz on that day's pages + spaced repetition. This fills that gap.
 
-## 라이선스
+## License
 
 MIT
